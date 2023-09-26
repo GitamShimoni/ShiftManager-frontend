@@ -20,14 +20,17 @@ const AvailabilityTable = () => {
   // const [lunchCheckBoxes, setLunchCheckBoxes] = useState([]);
   // const [eveningCheckBoxes, setEveningCheckBoxes] = useState([]);
   const [disableMorning, setDisableMorning] = useState([]);
+  const [selectedShifts, setSelectedShifts] = useState([]);
+  const [render, setRender] = useState(false);
 
   //A UseEffect that calls for the updatedShifts
   useEffect(() => {
     axios.post(`${host}/users/getUserShifts`, 
     {token: localStorage.getItem("token")})
-    .then(({data}) => {setUpdatedShifts(data); console.log(data, "These are the user shifts")})
+    .then(({data}) => {setUpdatedShifts(data); console.log(data, "These are the shifts");})
     .catch((err) => console.log(err))
   },[])
+
   useEffect(() => {
     // A function that counts how many days passed since this week's sunday
     const currentDate = new Date();
@@ -93,7 +96,7 @@ const AvailabilityTable = () => {
     setDateCounter((prev) => prev + 1);
   }
   // THIS IS SUPPOSED TO CHECK IF THERE IS SOMETHING IN ALL SHIFTS, CHANGE THIS TO BACKEND TO GET ALL THE CURRENT USER SHIFTS
-  // let allshifts:[];
+  let allshifts = [];
   // if (JSON.parse(localStorage.getItem("allshifts")) == undefined) {
   //   allshifts = [];
   //   localStorage.setItem("allshifts", JSON.stringify(allshifts));
@@ -134,21 +137,33 @@ const AvailabilityTable = () => {
       hour: hour,
       status: "selected",
     };
-
+    //Adding to an array, finally pushing the array with the objects to the backend
+    console.log(allshifts, "This is a test");
+    allshifts=updatedShifts;
     if (
       allshifts.some((obj) => {
         return obj.id == shift.id;
       })
     ) {
+      console.log(allshifts);
       allshifts = [...allshifts].filter((object) => object.id != shift.id);
       setUpdatedShifts(allshifts);
-      allshifts && localStorage.setItem("allshifts", JSON.stringify(allshifts));
+      console.log(allshifts, "These are the shifts");
+      // allshifts && localStorage.setItem("allshifts", JSON.stringify(allshifts));
     } else {
       allshifts.push(shift);
       setUpdatedShifts(allshifts);
-      console.log(updatedShifts);
-      localStorage.setItem("allshifts", JSON.stringify(allshifts));
+      console.log(allshifts, "These are the shifts");
+      // console.log(updatedShifts);
+      // localStorage.setItem("allshifts", JSON.stringify(allshifts));
     }
+  }
+
+  async function handleSubmitAvailble(){
+    axios.post(`${host}/shifts/CreateNewShift`, 
+    {shifts: updatedShifts, token:localStorage.getItem("token")})
+    .then(({data}) => {console.log(data, "These are the shifts");})
+    .catch((err) => console.log(err))
   }
 
   function HighlightCurrentDay(date) {
@@ -171,8 +186,10 @@ const AvailabilityTable = () => {
         return obj.id == checkDate;
       })
     ) {
+      console.log("TRUE!!!!!");
       return true;
     } else {
+      console.log("not true");
       return false;
     }
   }
@@ -180,6 +197,7 @@ const AvailabilityTable = () => {
     const checkDate = date + hour + loginname;
     for (let i = 0; i < updatedShifts.length; i++) {
       if (updatedShifts[i].id == checkDate) {
+        
         return updatedShifts[i].status == "accept";
       }
     }
@@ -224,11 +242,11 @@ const AvailabilityTable = () => {
     "Friday",
     "Saturday",
   ];
-  console.log("test");
   return (
     <>
       <div id="availble-main-div">
         <div id="availble-buttons-div">
+          <button onClick={() => handleSubmitAvailble()}>Submit Shifts</button>
           <Button onClick={handleLeftClick} variant="contained">
             ←
           </Button>

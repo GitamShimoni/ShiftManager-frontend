@@ -1,0 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu&display=swap");
+
+.appmain-container {
+  font-family: "Ubuntu", sans-serif;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  scroll-behavior: smooth;
+}
