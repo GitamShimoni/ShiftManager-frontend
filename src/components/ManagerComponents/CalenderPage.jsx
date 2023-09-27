@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import "./CalenderPage.css";
 import axios from "axios";
 import { appointments } from "./appointments";
+import Divcardofshift from "./Divcardofshift"
 
 
 
@@ -56,22 +57,19 @@ const CalenderPage = () => {
   useEffect(() => {
     axios
         .get("http://localhost:5000/shifts/fetchAllShifts")
-        .then(({ data }) => setAllSHifts(data))
+        .then(({ data }) => {
+          setAllSHifts(data)
+          const acceptedshift = data.filter((obj) => obj.status == "accept");
+          setData(acceptedshift)
+        }
+        )
         .catch((err) => {
             console.log(err.response?.data);
             alert(err.response?.data);
         });
-  }, []);
-
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    const acceptedshift = allshifts.filter((obj) => obj.status == "accept");
-    setData(acceptedshift)
-    console.log(acceptedshift, "This is the accepted shift");
   }, [appointments]);
 
-
+  const [data, setData] = useState([]);
   
   useEffect (()=>{
 
@@ -127,6 +125,8 @@ function sortfunctionofshowingshifts(value1) {
 }
 
 
+
+
   return (
     <div>
       <div id="calender-page-div"> 
@@ -176,12 +176,10 @@ function sortfunctionofshowingshifts(value1) {
         <input type="text" id="searchworker2" placeholder="Search By Worker Name" onChange={(e)=>searchWorkerFunction(e.target.value)}></input>
           </div>
           <div id="display-shifts-container">
-        {arrayofshiftsformanager.map((element, index) => (
+        {allshifts.map((element, index) => (
           <Divcardofshift
-            element={element}
             key={index}
-            shiftsincalander={data}
-            setshiftsincalander={setData}
+            element={element}
           />
         ))}
         </div>
