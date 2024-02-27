@@ -4,7 +4,9 @@ ShiftManager-frontend is the frontend component of ShiftManager - a comprehensiv
 
 # Backend Side - github.com/GitamShimoni/ShiftManager-backend
 
+![308116655-afa50d48-1dc0-4340-99ae-d4d6b76454ae](https://github.com/GitamShimoni/ShiftManager-frontend/assets/11949650/f0814eca-b866-4e31-bd3e-39bbe3b04d38)
 
+========================================================================================
 # Features -
 
 # User Side
